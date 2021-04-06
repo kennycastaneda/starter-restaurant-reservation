@@ -47,5 +47,10 @@
   },
   "keywords": [],
   "author": "Thinkful, Inc.",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "nanoid": "^3.1.22",
+    "pino-http": "^5.5.0",
+    "prettyprint": "^1.1.2"
+  }
 }
