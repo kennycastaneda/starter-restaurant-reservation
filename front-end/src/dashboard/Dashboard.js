@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import DashboardDate from "./DashboardDate";
 
 /**
  * Defines the dashboard page.
  * @param date
+ * @param updateDate
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date }) {
+function Dashboard({ date, updateDate }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
@@ -42,6 +44,7 @@ function Dashboard({ date }) {
   return (
     <main>
       <h1>Dashboard</h1>
+      <DashboardDate date={date} updateDate={updateDate} />
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date: {date}</h4>
       </div>

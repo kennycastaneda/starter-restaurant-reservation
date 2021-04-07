@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import ErrorAlert from "../../layout/ErrorAlert";
 import { createReservation } from "../../utils/api";
 
@@ -9,18 +9,20 @@ import { createReservation } from "../../utils/api";
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function CreateReservation({ date }) {
+
+function CreateReservation({ today, updateDate }) {
   const initialFormState = {
     first_name: "",
     last_name: "",
     mobile_number: "",
-    reservation_date: date,
+    reservation_date: today,
     reservation_time: "12:00",
     people: 0,
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
-  const [error, setError] = useState("");
+  const [reservationsError, setReservationsError] = useState(null);
+  const history = useHistory();
 
   const handleChange = ({ target }) => {
     setFormData({
@@ -33,10 +35,12 @@ function CreateReservation({ date }) {
     event.preventDefault();
 
     const abortController = new AbortController();
-
-    createReservation(formData, abortController.signal)
-      .then(setFormData({ ...initialFormState }))
-      .catch(setError);
+    createReservation(formData, abortController.signal).catch(
+      setReservationsError
+    );
+    console.log("new reservation date: ", formData.reservation_date);
+    updateDate(formData.reservation_date);
+    history.push(`/reservations?date=${formData.reservation_date}`);
   };
 
   return (
@@ -152,6 +156,7 @@ function CreateReservation({ date }) {
             </button>
           </div>
         </form>
+        <ErrorAlert error={reservationsError} />
       </div>
     </main>
   );
