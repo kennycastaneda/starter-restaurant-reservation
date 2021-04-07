@@ -11,7 +11,7 @@ function DashboardDate({ date, updateDate }) {
   return (
     <div className="d-flex row">
       <button onClick={handlePastDay}>Past Day</button>
-      <h1>Current Day: {date}</h1>
+
       <button onClick={handleNextDay}>Next Day</button>
     </div>
   );
