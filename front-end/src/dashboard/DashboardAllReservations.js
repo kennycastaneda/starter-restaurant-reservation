@@ -1,33 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
-import useQuery from "../utils/useQuery";
 import ErrorAlert from "../layout/ErrorAlert";
-import DashboardDate from "./DashboardDate";
-import DashboardAllReservations from "./DashboardAllReservations";
-import DashboardTable from "../layout/Table/DashboardTable";
 
 /**
- * Defines the dashboard page.
- * @param date
- * @param updateDate
- *  the date for which the user wants to view reservations.
+ * Defines the dashboard all reservations component.
+ *
  * @returns {JSX.Element}
  */
-function Dashboard({ date, updateDate }) {
+function DashboardAllReservations() {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
-  useEffect(loadDashboard, [date]);
-  const query = useQuery();
-  const dateQuery = query.get("date");
-  if (dateQuery != null) {
-    date = dateQuery;
-  }
+  useEffect(loadDashboard, []);
 
   function loadDashboard() {
     const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
+    listReservations({}, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
     return () => abortController.abort();
@@ -46,22 +34,24 @@ function Dashboard({ date, updateDate }) {
       <p className="mb-0">Date: {reservation.reservation_date}</p>
       <p className="mb-0">Time: {reservation.reservation_time}</p>
       <p className="mb-0">Party Size: {reservation.people}</p>
+      <a
+        href={`/reservations/${reservation.reservation_id}/seat`}
+        className="btn btn-primary m-1"
+      >
+        Seat
+      </a>
     </div>
   ));
 
   return (
     <main>
-      <h1>Dashboard</h1>
-      <DashboardDate date={date} updateDate={updateDate} />
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date: {date}</h4>
+        <h4 className="mb-0">All Reservations: </h4>
       </div>
       <ErrorAlert error={reservationsError} />
       {listOfReservations}
-      <DashboardAllReservations />
-      <DashboardTable />
     </main>
   );
 }
 
-export default Dashboard;
+export default DashboardAllReservations;

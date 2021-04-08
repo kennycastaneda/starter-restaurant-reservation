@@ -1,7 +1,8 @@
 const knex = require("../db/connection");
 const tableName = "reservations";
-const query = knex(tableName).select("*");
+
 function list(date) {
+  const query = knex(tableName).select("*");
   if (date != null) {
     query.where({ reservation_date: date });
   }

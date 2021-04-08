@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import ErrorAlert from "../../layout/ErrorAlert";
 import { createReservation } from "../../utils/api";
 import {
@@ -11,7 +11,8 @@ import {
 
 /**
  * Defines the create reservation page.
-
+ * @param today date of today
+ * @param updateDate function to update date displayed on dashboard
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
@@ -27,10 +28,11 @@ function CreateReservation({ today, updateDate }) {
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
-  const [reservationsError, setReservationsError] = useState(null);
+  const [reservationsError, setReservationsError] = useState([]);
   const history = useHistory();
 
   const handleChange = ({ target }) => {
+    setReservationsError([]);
     setFormData({
       ...formData,
       [target.name]: target.value,
@@ -39,19 +41,39 @@ function CreateReservation({ today, updateDate }) {
     if (target.name === "reservation_date") {
       try {
         checkInPast(target.value);
+      } catch (error) {
+        setReservationsError((reservationsError) => [
+          ...reservationsError,
+          <ErrorAlert error={error} key={error} />,
+        ]);
+      }
+      try {
         checkTuesday(target.value);
       } catch (error) {
-        setReservationsError(error);
+        setReservationsError((reservationsError) => [
+          ...reservationsError,
+          <ErrorAlert error={error} key={error} />,
+        ]);
       }
     }
     if (target.name === "reservation_time") {
       try {
         checkTime(target.value);
-        if (formData.reservation_date === today) {
-          checkTodayTime(target.value);
-        }
       } catch (error) {
-        setReservationsError(error);
+        setReservationsError((reservationsError) => [
+          ...reservationsError,
+          <ErrorAlert error={error} key={error} />,
+        ]);
+      }
+      if (formData.reservation_date === today) {
+        try {
+          checkTodayTime(target.value);
+        } catch (error) {
+          setReservationsError((reservationsError) => [
+            ...reservationsError,
+            <ErrorAlert error={error} key={error} />,
+          ]);
+        }
       }
     }
   };
@@ -63,10 +85,14 @@ function CreateReservation({ today, updateDate }) {
       createReservation(formData, abortController.signal);
       console.log("new reservation date: ", formData.reservation_date);
       updateDate(formData.reservation_date);
-      history.push(`/reservations?date=${formData.reservation_date}`);
+      history.push(`/dashboard`);
     } catch (error) {
       setReservationsError(error);
     }
+  };
+  const handleCancel = (event) => {
+    event.preventDefault();
+    history.goBack();
   };
 
   return (
@@ -173,16 +199,20 @@ function CreateReservation({ today, updateDate }) {
             />
           </label>
           <div className="container">
-            <Link to={`/`} type="button" className="btn btn-secondary m-1">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="btn btn-secondary m-1"
+            >
               Cancel
-            </Link>
+            </button>
             <button type="submit" className="btn btn-primary m-1">
               Submit
             </button>
           </div>
         </form>
-        <ErrorAlert error={reservationsError} />
       </div>
+      {reservationsError}
     </main>
   );
 }
