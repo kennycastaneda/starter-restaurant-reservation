@@ -59,6 +59,7 @@ export async function checkInPast(currentDate) {
     if (versusToday.getTime() < today.getTime()) {
       throw new Error("Date is in the past.");
     }
+    return true;
   } catch (error) {
     console.error(error.message);
     return Promise.reject({ message: error.message });
@@ -73,6 +74,44 @@ export async function checkTuesday(currentDate) {
     if (tuesdayDate.getDay() === 2) {
       throw new Error("Restaurant is closed on Tuesdays.");
     }
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    return Promise.reject({ message: error.message });
+  }
+}
+export async function checkTime(time) {
+  let [hour, minute] = time.split(":");
+  try {
+    if (
+      Number(hour) < 10 ||
+      (Number(hour) === 10 && Number(minute) < 30) ||
+      Number(hour) > 22 ||
+      (Number(hour) === 21 && Number(minute) > 30)
+    ) {
+      throw new Error(
+        "Can only make reservation between 10:30 AM and 9:30 PM."
+      );
+    }
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    return Promise.reject({ message: error.message });
+  }
+}
+export async function checkTodayTime(time) {
+  let [hour, minute] = time.split(":");
+  const nowTime = new Date();
+  const nowHour = nowTime.getHours();
+  const nowMinute = nowTime.getMinutes();
+  try {
+    if (
+      Number(hour) < nowHour ||
+      (Number(hour) === nowHour && Number(minute) < nowMinute)
+    ) {
+      throw new Error("Can not make reservation in past of time now.");
+    }
+    return true;
   } catch (error) {
     console.error(error.message);
     return Promise.reject({ message: error.message });

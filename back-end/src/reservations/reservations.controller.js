@@ -1,6 +1,39 @@
 /**
  * List handler for reservation resources
  */
+async function checkInPast(currentDate) {
+  let [year, month, day] = currentDate.split("-");
+  month -= 1;
+  const versusToday = new Date(year, month, day);
+  const today = new Date();
+
+  try {
+    if (versusToday.getTime() < today.getTime()) {
+      //throw new Error("Date is in the past.");
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    return Promise.reject({ message: error.message });
+  }
+}
+async function checkTuesday(currentDate) {
+  let [year, month, day] = currentDate.split("-");
+  month -= 1;
+  const tuesdayDate = new Date(year, month, day);
+
+  try {
+    if (tuesdayDate.getDay() === 2) {
+      //throw new Error("Restaurant is closed on Tuesdays.");
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    return Promise.reject({ message: error.message });
+  }
+}
 const ReservationService = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 function hasData(req, res, next) {
@@ -30,6 +63,20 @@ function dataHas(propertyName) {
     req.log.trace({ __filename, methodName, valid: false }, message);
   };
 }
+
+async function hasValidDate(req, res, next) {
+  const methodName = "hasValidDate";
+  req.log.debug({ __filename, methodName, body: req.body });
+  const date = req.body.data.reservation_date;
+
+  if ((await checkTuesday(date)) && (await checkInPast(date))) {
+    req.log.trace({ __filename, methodName, valid: true });
+    return next();
+  }
+  const message = "Date is not valid...either in the past or falls on Tuesday";
+  next({ status: 400, message: message });
+  req.log.trace({ __filename, methodName, valid: false }, message);
+}
 const hasFirstName = dataHas("first_name");
 const hasLastName = dataHas("last_name");
 const hasMobileNumber = dataHas("mobile_number");
@@ -58,6 +105,7 @@ async function list(req, res) {
 module.exports = {
   create: [
     hasData,
+    asyncErrorBoundary(hasValidDate),
     hasFirstName,
     hasLastName,
     hasMobileNumber,

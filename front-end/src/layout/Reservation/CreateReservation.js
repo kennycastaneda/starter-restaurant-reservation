@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import ErrorAlert from "../../layout/ErrorAlert";
 import { createReservation } from "../../utils/api";
-import { checkInPast, checkTuesday } from "../../utils/date-time";
+import {
+  checkInPast,
+  checkTime,
+  checkTodayTime,
+  checkTuesday,
+} from "../../utils/date-time";
 
 /**
  * Defines the create reservation page.
@@ -35,6 +40,16 @@ function CreateReservation({ today, updateDate }) {
       try {
         checkInPast(target.value);
         checkTuesday(target.value);
+      } catch (error) {
+        setReservationsError(error);
+      }
+    }
+    if (target.name === "reservation_time") {
+      try {
+        checkTime(target.value);
+        if (formData.reservation_date === today) {
+          checkTodayTime(target.value);
+        }
       } catch (error) {
         setReservationsError(error);
       }
@@ -136,9 +151,8 @@ function CreateReservation({ today, updateDate }) {
               value={formData.reservation_time}
               onChange={handleChange}
               className="w-100"
-              min="10:00"
-              max="24:00"
-              step="600"
+              min="10:29"
+              max="21:31"
             />
             <small>Reservation hours are 10am to Midnight</small>
           </label>
