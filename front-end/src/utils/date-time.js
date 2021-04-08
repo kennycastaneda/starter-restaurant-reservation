@@ -49,6 +49,35 @@ export function today() {
   return asDateString(new Date());
 }
 
+export async function checkInPast(currentDate) {
+  let [year, month, day] = currentDate.split("-");
+  month -= 1;
+  const versusToday = new Date(year, month, day);
+  const today = new Date();
+
+  try {
+    if (versusToday.getTime() < today.getTime()) {
+      throw new Error("Date is in the past.");
+    }
+  } catch (error) {
+    console.error(error.message);
+    return Promise.reject({ message: error.message });
+  }
+}
+export async function checkTuesday(currentDate) {
+  let [year, month, day] = currentDate.split("-");
+  month -= 1;
+  const tuesdayDate = new Date(year, month, day);
+
+  try {
+    if (tuesdayDate.getDay() === 2) {
+      throw new Error("Restaurant is closed on Tuesdays.");
+    }
+  } catch (error) {
+    console.error(error.message);
+    return Promise.reject({ message: error.message });
+  }
+}
 /**
  * Subtracts one day to the specified date and return it in as YYYY-MM-DD.
  * @param currentDate

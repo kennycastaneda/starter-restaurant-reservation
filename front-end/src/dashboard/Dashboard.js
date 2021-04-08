@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
+import useQuery from "../utils/useQuery";
 import ErrorAlert from "../layout/ErrorAlert";
 import DashboardDate from "./DashboardDate";
 
@@ -15,6 +16,11 @@ function Dashboard({ date, updateDate }) {
   const [reservationsError, setReservationsError] = useState(null);
 
   useEffect(loadDashboard, [date]);
+  const query = useQuery();
+  const dateQuery = query.get("date");
+  if (dateQuery != null) {
+    date = dateQuery;
+  }
 
   function loadDashboard() {
     const abortController = new AbortController();

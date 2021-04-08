@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import ErrorAlert from "../../layout/ErrorAlert";
 import { createReservation } from "../../utils/api";
+import { checkInPast, checkTuesday } from "../../utils/date-time";
 
 /**
  * Defines the create reservation page.
@@ -29,18 +30,28 @@ function CreateReservation({ today, updateDate }) {
       ...formData,
       [target.name]: target.value,
     });
+
+    if (target.name === "reservation_date") {
+      try {
+        checkInPast(target.value);
+        checkTuesday(target.value);
+      } catch (error) {
+        setReservationsError(error);
+      }
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const abortController = new AbortController();
-    createReservation(formData, abortController.signal).catch(
-      setReservationsError
-    );
-    console.log("new reservation date: ", formData.reservation_date);
-    updateDate(formData.reservation_date);
-    history.push(`/reservations?date=${formData.reservation_date}`);
+    try {
+      const abortController = new AbortController();
+      createReservation(formData, abortController.signal);
+      console.log("new reservation date: ", formData.reservation_date);
+      updateDate(formData.reservation_date);
+      history.push(`/reservations?date=${formData.reservation_date}`);
+    } catch (error) {
+      setReservationsError(error);
+    }
   };
 
   return (

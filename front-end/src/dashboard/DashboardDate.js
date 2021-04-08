@@ -1,5 +1,5 @@
 import React from "react";
-import { previous, next, formatAsDate } from "../utils/date-time";
+import { previous, next } from "../utils/date-time";
 
 function DashboardDate({ date, updateDate }) {
   const handlePastDay = () => {
