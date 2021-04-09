@@ -56,7 +56,7 @@ export function checkInPast(currentDate) {
   versusToday.setHours(23);
   versusToday.setMinutes(59);
   const today = new Date();
-  console.log(versusToday.getTime(), today.getTime());
+
   if (versusToday.getTime() < today.getTime()) {
     throw new Error("Date is in the past.");
   }

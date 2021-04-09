@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listTables } from "../../utils/api";
+import { listTables, finishTable } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 /**
@@ -11,28 +11,21 @@ function DashboardTable() {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
 
-  useEffect(loadTables, []);
+  useEffect(() => {
+    return loadTables();
+  }, []);
 
   function loadTables() {
-    console.log("getting tables");
     const abortController = new AbortController();
     listTables({}, abortController.signal)
       .then(setTables)
       .catch(setTablesError);
     return () => abortController.abort();
   }
-
-  const listOfTables = tables.map((table) => (
-    <div className="d-md-flex flex-column mb-3" key={table.table_id}>
-      <h4 className="mb-0">Table #{table.table_id}</h4>
-      <p className="mb-0">{table.table_name} </p>
-      <p data-table-id-status={table.table_id}>
-        {table.occupied
-          ? `Occupied - Reservation #${table.reservation_id}`
-          : "Free"}
-      </p>
-    </div>
-  ));
+  async function finishClick(event) {
+    await finishTable(event.target.value);
+    loadTables();
+  }
 
   return (
     <main>
@@ -40,7 +33,26 @@ function DashboardTable() {
         <h4 className="mb-0">Tables: </h4>
       </div>
       <ErrorAlert error={tablesError} />
-      {listOfTables}
+      {tables.map((table) => (
+        <div className="d-md-flex flex-column mb-3" key={table.table_id}>
+          <h4 className="mb-0">Table #{table.table_id}</h4>
+          <p className="mb-0">{table.table_name} </p>
+          <p data-table-id-status={table.table_id}>
+            {table.occupied
+              ? `Occupied - Reservation #${table.reservation_id}`
+              : "Free"}
+          </p>
+          <button
+            className="btn btn-warning"
+            onClick={finishClick}
+            value={table.table_id}
+            data-reservation-id-status={table.reservation_id}
+            disabled={!table.occupied}
+          >
+            Finish
+          </button>
+        </div>
+      ))}
     </main>
   );
 }

@@ -1,38 +1,28 @@
 /**
  * List handler for reservation resources
  */
-async function checkInPast(currentDate) {
+function checkInPast(currentDate) {
   let [year, month, day] = currentDate.split("-");
   month -= 1;
   const versusToday = new Date(year, month, day);
+  versusToday.setHours(23);
+  versusToday.setMinutes(59);
   const today = new Date();
 
-  try {
-    if (versusToday.getTime() < today.getTime()) {
-      //throw new Error("Date is in the past.");
-      return false;
-    }
-    return true;
-  } catch (error) {
-    console.error(error.message);
-    return Promise.reject({ message: error.message });
+  if (versusToday.getTime() < today.getTime()) {
+    return false;
   }
+  return true;
 }
-async function checkTuesday(currentDate) {
+function checkTuesday(currentDate) {
   let [year, month, day] = currentDate.split("-");
   month -= 1;
   const tuesdayDate = new Date(year, month, day);
 
-  try {
-    if (tuesdayDate.getDay() === 2) {
-      //throw new Error("Restaurant is closed on Tuesdays.");
-      return false;
-    }
-    return true;
-  } catch (error) {
-    console.error(error.message);
-    return Promise.reject({ message: error.message });
+  if (tuesdayDate.getDay() === 2) {
+    return false;
   }
+  return true;
 }
 const ReservationService = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
@@ -69,7 +59,7 @@ async function hasValidDate(req, res, next) {
   req.log.debug({ __filename, methodName, body: req.body });
   const date = req.body.data.reservation_date;
 
-  if ((await checkTuesday(date)) && (await checkInPast(date))) {
+  if (checkTuesday(date) && checkInPast(date)) {
     req.log.trace({ __filename, methodName, valid: true });
     return next();
   }
@@ -95,9 +85,24 @@ async function create(req, res) {
 async function list(req, res) {
   const methodName = "list";
   req.log.debug({ __filename, methodName });
-  //console.log(req.query);
+
   const { date = null } = req.query;
   const data = await ReservationService.list(date);
+  res.json({ data });
+  req.log.trace({ __filename, methodName, return: true, data });
+}
+async function listPeople(req, res) {
+  const methodName = "listPeople";
+  req.log.debug({ __filename, methodName });
+
+  const { reservation_id = null } = req.params;
+  if (reservation_id === null) {
+    const message = "Reservation ID param is missing";
+    next({ status: 400, message: message });
+    req.log.trace({ __filename, methodName, valid: false }, message);
+  }
+
+  const data = await ReservationService.listPeople(reservation_id);
   res.json({ data });
   req.log.trace({ __filename, methodName, return: true, data });
 }
@@ -114,5 +119,6 @@ module.exports = {
     hasPeople,
     asyncErrorBoundary(create),
   ],
+  listPeople: asyncErrorBoundary(listPeople),
   list: asyncErrorBoundary(list),
 };

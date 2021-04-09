@@ -45,6 +45,15 @@ async function update(req, res) {
     data: updatedTable,
   });
 }
+
+async function finish(req, res) {
+  const { table_id } = req.body.data;
+  const finishTable = await TableService.finish(table_id);
+  res.status(200).json({
+    data: finishTable,
+  });
+}
+
 async function list(req, res) {
   const methodName = "list";
   req.log.debug({ __filename, methodName });
@@ -59,4 +68,5 @@ module.exports = {
   create: [hasData, hasTableName, hasCapacity, asyncErrorBoundary(create)],
   list: asyncErrorBoundary(list),
   update: asyncErrorBoundary(update),
+  finish: asyncErrorBoundary(finish),
 };

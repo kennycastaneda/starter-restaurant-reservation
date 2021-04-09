@@ -52,14 +52,23 @@ function Dashboard({ date, updateDate }) {
   return (
     <main>
       <h1>Dashboard</h1>
-      <DashboardDate date={date} updateDate={updateDate} />
-      <div className="d-md-flex mb-3">
+      <div className="w-100 px-5">
+        <DashboardDate date={date} updateDate={updateDate} />
+      </div>
+      <div className="d-md-flex mb-3 px-5 pt-5">
         <h4 className="mb-0">Reservations for date: {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {listOfReservations}
-      <DashboardAllReservations />
-      <DashboardTable />
+      <div className="px-5">{listOfReservations}</div>
+
+      <div className="d-md-flex mb-3">
+        <div className="column w-50 p-5">
+          <DashboardAllReservations />
+        </div>
+        <div className="column w-50 p-5">
+          <DashboardTable />
+        </div>
+      </div>
     </main>
   );
 }

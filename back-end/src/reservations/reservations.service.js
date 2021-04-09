@@ -9,10 +9,17 @@ function list(date) {
   return query.orderBy("reservation_time");
 }
 
+function listPeople(reservation_id) {
+  return knex(tableName)
+    .select("people")
+    .where({ reservation_id: reservation_id });
+}
+
 function create(newReservation) {
   return knex(tableName).insert(newReservation).returning("*");
 }
 module.exports = {
   list,
   create,
+  listPeople,
 };
