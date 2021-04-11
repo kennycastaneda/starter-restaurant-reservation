@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { listTables, seatTable, getPeople } from "../../utils/api";
+import {
+  listTables,
+  seatTable,
+  getPeople,
+  reservationStatusUpdate,
+} from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 /**
@@ -53,6 +58,7 @@ function SeatTable() {
     try {
       const abortController = new AbortController();
       seatTable(formData.table_name, reservation_id, abortController.signal);
+      reservationStatusUpdate(reservation_id, "seated", abortController.signal);
       history.push(`/dashboard`);
     } catch (error) {
       setTablesError(error);

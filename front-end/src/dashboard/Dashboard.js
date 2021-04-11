@@ -33,22 +33,6 @@ function Dashboard({ date, updateDate }) {
     return () => abortController.abort();
   }
 
-  const listOfReservations = reservations.map((reservation) => (
-    <div
-      className="d-md-flex flex-column mb-3"
-      key={reservation.reservation_id}
-    >
-      <h4 className="mb-0">Reservation #{reservation.reservation_id}</h4>
-      <p className="mb-0">
-        {reservation.first_name} {reservation.last_name} -{" "}
-        {reservation.mobile_number}
-      </p>
-      <p className="mb-0">Date: {reservation.reservation_date}</p>
-      <p className="mb-0">Time: {reservation.reservation_time}</p>
-      <p className="mb-0">Party Size: {reservation.people}</p>
-    </div>
-  ));
-
   return (
     <main>
       <h1>Dashboard</h1>
@@ -59,7 +43,24 @@ function Dashboard({ date, updateDate }) {
         <h4 className="mb-0">Reservations for date: {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <div className="px-5">{listOfReservations}</div>
+      <div className="px-5">
+        {reservations.map((reservation) => (
+          <div
+            className="d-md-flex flex-column mb-3"
+            key={reservation.reservation_id}
+          >
+            <h4 className="mb-0">Reservation #{reservation.reservation_id}</h4>
+            <h5>{reservation.reservation_status}</h5>
+            <p className="mb-0">
+              {reservation.first_name} {reservation.last_name} -{" "}
+              {reservation.mobile_number}
+            </p>
+            <p className="mb-0">Date: {reservation.reservation_date}</p>
+            <p className="mb-0">Time: {reservation.reservation_time}</p>
+            <p className="mb-0">Party Size: {reservation.people}</p>
+          </div>
+        ))}
+      </div>
 
       <div className="d-md-flex mb-3">
         <div className="column w-50 p-5">

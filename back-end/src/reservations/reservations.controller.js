@@ -106,6 +106,20 @@ async function listPeople(req, res) {
   res.json({ data });
   req.log.trace({ __filename, methodName, return: true, data });
 }
+async function reservationStatus(req, res) {
+  const methodName = "reservationStatus";
+  req.log.debug({ __filename, methodName });
+  const { reservation_id = null } = req.params;
+  const { new_status = null } = req.body.data;
+  if (reservation_id === null || new_status === null) {
+    const message = "Reservation ID param or Status datum is missing";
+    next({ status: 400, message: message });
+    req.log.trace({ __filename, methodName, valid: false }, message);
+  }
+  const data = await ReservationService.reservationStatus(reservation_id, new_status);
+  res.json({ data });
+  req.log.trace({ __filename, methodName, return: true, data });
+}
 
 module.exports = {
   create: [
@@ -121,4 +135,5 @@ module.exports = {
   ],
   listPeople: asyncErrorBoundary(listPeople),
   list: asyncErrorBoundary(list),
+  reservationStatus: asyncErrorBoundary(reservationStatus),
 };

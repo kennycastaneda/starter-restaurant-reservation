@@ -14,6 +14,12 @@ function listPeople(reservation_id) {
     .select("people")
     .where({ reservation_id: reservation_id });
 }
+function reservationStatus(reservation_id, new_status) {
+  return knex(tableName)
+    .select("*")
+    .update({ reservation_status: new_status })
+    .where({ reservation_id: reservation_id });
+}
 
 function create(newReservation) {
   return knex(tableName).insert(newReservation).returning("*");
@@ -22,4 +28,5 @@ module.exports = {
   list,
   create,
   listPeople,
+  reservationStatus,
 };

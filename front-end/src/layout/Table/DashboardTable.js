@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { listTables, finishTable } from "../../utils/api";
+import {
+  listTables,
+  finishTable,
+  reservationStatusUpdate,
+} from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 /**
@@ -23,8 +27,28 @@ function DashboardTable() {
     return () => abortController.abort();
   }
   async function finishClick(event) {
-    await finishTable(event.target.value);
-    loadTables();
+    if (
+      window.confirm(
+        "Is this table ready to seat new guests? This cannot be undone."
+      )
+    ) {
+      const abortController = new AbortController();
+      console.log(event.target.value);
+      reservationStatusUpdate(
+        event.target.value[2], //reservation_id
+        "finished",
+        abortController.signal
+      ).catch(setTablesError);
+      finishTable(
+        event.target.value[0], //table_id
+        abortController.signal
+      )
+        .then(loadTables)
+        .catch(setTablesError);
+      return () => abortController.abort();
+    } else {
+      //do nothing
+    }
   }
 
   return (
@@ -45,7 +69,7 @@ function DashboardTable() {
           <button
             className="btn btn-warning"
             onClick={finishClick}
-            value={table.table_id}
+            value={[table.table_id, table.reservation_id]}
             data-reservation-id-status={table.reservation_id}
             disabled={!table.occupied}
           >

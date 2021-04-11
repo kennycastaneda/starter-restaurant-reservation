@@ -47,7 +47,13 @@ async function update(req, res) {
 }
 
 async function finish(req, res) {
-  const { table_id } = req.body.data;
+  const methodName = `Finish Table')`;
+  const { table_id = null } = req.params;
+  if (table_id === null) {
+    const message = `Table_id not passed`;
+    next({ status: 400, message: message });
+    req.log.trace({ __filename, methodName, valid: false }, message);
+  }
   const finishTable = await TableService.finish(table_id);
   res.status(200).json({
     data: finishTable,

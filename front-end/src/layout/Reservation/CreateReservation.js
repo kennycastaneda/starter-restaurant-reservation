@@ -23,7 +23,7 @@ function CreateReservation({ today, updateDate }) {
     last_name: "",
     mobile_number: "",
     reservation_date: today,
-    reservation_time: "12:00",
+    reservation_time: "",
     people: 0,
   };
 
@@ -87,7 +87,10 @@ function CreateReservation({ today, updateDate }) {
       updateDate(formData.reservation_date);
       history.push(`/dashboard`);
     } catch (error) {
-      setReservationsError(error);
+      setReservationsError((reservationsError) => [
+        ...reservationsError,
+        <ErrorAlert error={error} key={error} />,
+      ]);
     }
   };
   const handleCancel = (event) => {
