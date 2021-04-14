@@ -8,6 +8,7 @@ import CreateTable from "./Table/CreateTable";
 import SeatTable from "./Table/SeatTable";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
+import EditReservation from "./Reservation/EditReservation";
 
 /**
  * Defines all the routes for the application.
@@ -18,7 +19,7 @@ import { today } from "../utils/date-time";
  */
 function Routes() {
   const [date, setDate] = useState(today());
-  function updateDate(newDate) {
+  async function updateDate(newDate) {
     setDate(newDate);
   }
   return (
@@ -32,6 +33,9 @@ function Routes() {
       </Route>
       <Route path="/reservations/:reservation_id/seat">
         <SeatTable />
+      </Route>
+      <Route path="/reservations/:reservation_id/edit">
+        <EditReservation today={today()} updateDate={updateDate} />
       </Route>
       <Route exact={true} path="/reservations/new">
         <CreateReservation today={today()} updateDate={updateDate} />

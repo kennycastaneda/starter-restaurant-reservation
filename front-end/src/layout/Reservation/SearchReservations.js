@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../../layout/ErrorAlert";
 import { searchReservation } from "../../utils/api";
+import SeatReservation from "./SeatReservation";
 
 /**
  * Defines the create reservation page.
@@ -18,25 +19,38 @@ function SearchReservation() {
 
   const [formData, setFormData] = useState({ ...initialFormState });
   const [reservationsError, setReservationsError] = useState(null);
+  const [reservations, setReservations] = useState([]);
   const history = useHistory();
 
   const handleChange = ({ target }) => {
-    setReservationsError([]);
+    setReservationsError(null);
     setFormData({
       ...formData,
       [target.name]: target.value,
     });
   };
 
-  const handleSubmit = (event) => {
+  async function handleSubmit(event) {
+    setReservationsError(null);
     event.preventDefault();
     try {
       const abortController = new AbortController();
-      searchReservation(formData, abortController.signal);
+
+      const searchResults = await searchReservation(
+        formData,
+        abortController.signal
+      );
+
+      if (searchResults.length) {
+        setReservations(searchResults);
+      } else {
+        setReservations([]);
+        throw new Error("No reservations found");
+      }
     } catch (error) {
       setReservationsError(error);
     }
-  };
+  }
 
   const handleCancel = (event) => {
     event.preventDefault();
@@ -80,6 +94,16 @@ function SearchReservation() {
         </form>
       </div>
       <ErrorAlert error={reservationsError} />
+      <div className="d-flex flex-wrap">
+        {reservations.map((reservation) => (
+          <div
+            className="d-md-flex flex-column border p-3 col-6"
+            key={reservation.reservation_id}
+          >
+            <SeatReservation reservation={reservation} />
+          </div>
+        ))}
+      </div>
     </main>
   );
 }

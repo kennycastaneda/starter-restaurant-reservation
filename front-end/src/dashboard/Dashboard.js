@@ -14,8 +14,20 @@ import DashboardTable from "../layout/Table/DashboardTable";
  * @returns {JSX.Element}
  */
 function Dashboard({ date, updateDate }) {
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  const [reservationsDate, setReservationsDate] = useState([]);
+  const [reservationsDateError, setReservationsDateError] = useState(null);
+  const [bookedReservations, setBookedReservations] = useState([]);
+  const [bookedReservationsError, setBookedReservationsError] = useState(null);
+
+  useEffect(loadAllReservations, []);
+
+  function loadAllReservations() {
+    const abortController = new AbortController();
+    listReservations({}, abortController.signal)
+      .then(setBookedReservations)
+      .catch(setBookedReservationsError);
+    return () => abortController.abort();
+  }
 
   useEffect(loadDashboard, [date]);
   const query = useQuery();
@@ -26,27 +38,27 @@ function Dashboard({ date, updateDate }) {
 
   function loadDashboard() {
     const abortController = new AbortController();
-    setReservationsError(null);
+    setReservationsDateError(null);
     listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
+      .then(setReservationsDate)
+      .catch(setReservationsDateError);
     return () => abortController.abort();
   }
 
   return (
     <main>
       <h1>Dashboard</h1>
-      <div className="w-100 px-5">
+      <div className="w-100 px-5 ">
         <DashboardDate date={date} updateDate={updateDate} />
       </div>
-      <div className="d-md-flex mb-3 px-5 pt-5">
+      <div className="d-md-flex mb-3 px-5 pt-5 ">
         <h4 className="mb-0">Reservations for date: {date}</h4>
       </div>
-      <ErrorAlert error={reservationsError} />
-      <div className="px-5">
-        {reservations.map((reservation) => (
+      <ErrorAlert error={reservationsDateError} />
+      <div className="px-5 d-flex flex-wrap ">
+        {reservationsDate.map((reservation) => (
           <div
-            className="d-md-flex flex-column mb-3"
+            className="d-md-flex flex-column  p-1 border col"
             key={reservation.reservation_id}
           >
             <h4 className="mb-0">Reservation #{reservation.reservation_id}</h4>
@@ -63,11 +75,14 @@ function Dashboard({ date, updateDate }) {
       </div>
 
       <div className="d-md-flex mb-3">
-        <div className="column w-50 p-5">
-          <DashboardAllReservations />
+        <div className="column w-50 d-flex flex-wrap">
+          <DashboardAllReservations
+            reservations={bookedReservations}
+            reservationsError={bookedReservationsError}
+          />
         </div>
-        <div className="column w-50 p-5">
-          <DashboardTable />
+        <div className="column w-50  d-flex flex-wrap">
+          <DashboardTable loadAllReservations = {loadAllReservations}/>
         </div>
       </div>
     </main>

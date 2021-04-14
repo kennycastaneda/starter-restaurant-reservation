@@ -53,19 +53,44 @@ function dataHas(propertyName) {
     req.log.trace({ __filename, methodName, valid: false }, message);
   };
 }
+async function peopleIsNumber(req, res, next) {
+  const methodName = "hasValidDate And Time";
+  req.log.debug({ __filename, methodName, body: req.body });
+  const people = req.body.data.people;
+
+  if (typeof people != "number") {
+    return next({ status: 400, message: "people is not a number" });
+  }
+  next();
+}
 
 async function hasValidDate(req, res, next) {
-  const methodName = "hasValidDate";
+  const methodName = "hasValidDate And Time";
   req.log.debug({ __filename, methodName, body: req.body });
   const date = req.body.data.reservation_date;
-
-  if (checkTuesday(date) && checkInPast(date)) {
-    req.log.trace({ __filename, methodName, valid: true });
-    return next();
+  const checkDate = new Date(date);
+  const time = req.body.data.reservation_time;
+  const [hour, minute] = time.split(":");
+  if (isNaN(hour) || isNaN(minute)) {
+    const message = "reservation_time is not valid time type";
+    req.log.trace({ __filename, methodName, valid: false }, message);
+    return next({ status: 400, message: message });
   }
-  const message = "Date is not valid...either in the past or falls on Tuesday";
-  next({ status: 400, message: message });
-  req.log.trace({ __filename, methodName, valid: false }, message);
+
+  if (checkDate == "Invalid Date") {
+    const message = "reservation_date is not valid date type";
+    req.log.trace({ __filename, methodName, valid: false }, message);
+    return next({ status: 400, message: message });
+  }
+
+  if (!checkTuesday(date) || !checkInPast(date)) {
+    const message =
+      "reservation_date is not valid...either in the past (needs to be current or future day) or Tuesday closed";
+    req.log.trace({ __filename, methodName, valid: false }, message);
+    return next({ status: 400, message: message });
+  }
+  req.log.trace({ __filename, methodName, valid: true });
+  next();
 }
 const hasFirstName = dataHas("first_name");
 const hasLastName = dataHas("last_name");
@@ -78,7 +103,14 @@ async function create(req, res) {
   const newReservation = await ReservationService.create(req.body.data);
 
   res.status(201).json({
-    data: newReservation,
+    data: newReservation[0],
+  });
+}
+async function update(req, res) {
+  const updatedReservation = await ReservationService.update(req.body.data);
+
+  res.status(201).json({
+    data: updatedReservation[0],
   });
 }
 
@@ -87,7 +119,13 @@ async function list(req, res) {
   req.log.debug({ __filename, methodName });
 
   const { date = null } = req.query;
-  const data = await ReservationService.list(date);
+  const { mobile_number = null } = req.query;
+  const { reservation_id = null } = req.query;
+  const data = await ReservationService.list(
+    date,
+    mobile_number,
+    reservation_id
+  );
   res.json({ data });
   req.log.trace({ __filename, methodName, return: true, data });
 }
@@ -111,27 +149,44 @@ async function reservationStatus(req, res) {
   req.log.debug({ __filename, methodName });
   const { reservation_id = null } = req.params;
   const { new_status = null } = req.body.data;
+
   if (reservation_id === null || new_status === null) {
     const message = "Reservation ID param or Status datum is missing";
     next({ status: 400, message: message });
-    req.log.trace({ __filename, methodName, valid: false }, message);
+    req.log.debug({ __filename, methodName, valid: false }, message);
   }
-  const data = await ReservationService.reservationStatus(reservation_id, new_status);
-  res.json({ data });
+  const reservationStatusData = await ReservationService.reservationStatus(
+    reservation_id,
+    new_status
+  );
+  res.json({ data: reservationStatusData });
   req.log.trace({ __filename, methodName, return: true, data });
 }
 
 module.exports = {
   create: [
     hasData,
-    asyncErrorBoundary(hasValidDate),
     hasFirstName,
     hasLastName,
     hasMobileNumber,
     hasReservationDate,
     hasReservationTime,
     hasPeople,
+    asyncErrorBoundary(peopleIsNumber),
+    asyncErrorBoundary(hasValidDate),
     asyncErrorBoundary(create),
+  ],
+  update: [
+    hasData,
+    hasFirstName,
+    hasLastName,
+    hasMobileNumber,
+    hasReservationDate,
+    hasReservationTime,
+    hasPeople,
+    asyncErrorBoundary(peopleIsNumber),
+    asyncErrorBoundary(hasValidDate),
+    asyncErrorBoundary(update),
   ],
   listPeople: asyncErrorBoundary(listPeople),
   list: asyncErrorBoundary(list),

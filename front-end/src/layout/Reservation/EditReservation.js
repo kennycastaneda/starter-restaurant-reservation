@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import ErrorAlert from "../../layout/ErrorAlert";
-import { createReservation } from "../../utils/api";
+import { updateReservation, listReservations } from "../../utils/api";
 import {
   checkInPast,
   checkTime,
@@ -11,13 +11,13 @@ import {
 
 /**
  * Defines the create reservation page.
- * @param today date of today
+ *
  * @param updateDate function to update date displayed on dashboard
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
 
-function CreateReservation({ today, updateDate }) {
+function EditReservation({ today, updateDate }) {
   const initialFormState = {
     first_name: "",
     last_name: "",
@@ -25,25 +25,36 @@ function CreateReservation({ today, updateDate }) {
     reservation_date: "",
     reservation_time: "",
     people: 0,
+    reservation_status: "",
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
   const [reservationsError, setReservationsError] = useState([]);
+  const [reservationData, setReservationData] = useState({});
   const history = useHistory();
+  const { reservation_id } = useParams();
+
+  function getEditReservationData() {
+    const abortController = new AbortController();
+    listReservations({ reservation_id: reservation_id }, abortController.signal)
+      .then(setReservationData)
+      .catch(setReservationsError);
+  }
+
+  useEffect(getEditReservationData, [reservation_id]);
+  useEffect(() => {
+    if (reservationData.length) {
+      setFormData(reservationData[0]);
+    }
+  }, [reservationData]);
 
   const handleChange = ({ target }) => {
     setReservationsError([]);
-    if (target.name === "people") {
-      setFormData({
-        ...formData,
-        [target.name]: Number(target.value),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [target.name]: target.value,
-      });
-    }
+    setFormData({
+      ...formData,
+      [target.name]: target.value,
+    });
+
     if (target.name === "reservation_date") {
       try {
         checkInPast(target.value);
@@ -84,14 +95,14 @@ function CreateReservation({ today, updateDate }) {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const abortController = new AbortController();
-      createReservation(formData, abortController.signal);
+      updateReservation(formData, abortController.signal);
       console.log("new reservation date: ", formData.reservation_date);
-      updateDate(formData.reservation_date);
-      history.push(`/dashboard`);
+      await updateDate(formData.reservation_date);
+      history.push("/dashboard");
     } catch (error) {
       setReservationsError((reservationsError) => [
         ...reservationsError,
@@ -104,9 +115,9 @@ function CreateReservation({ today, updateDate }) {
     history.goBack();
   };
 
-  return (
+  return formData.reservation_status === "booked" ? (
     <main>
-      <h1>Create New Reservation</h1>
+      <h1>Edit Reservation {reservation_id}</h1>
       <div className="d-md-flex mb-3">
         <form onSubmit={handleSubmit} className="column">
           <label>
@@ -207,6 +218,8 @@ function CreateReservation({ today, updateDate }) {
               max="24"
             />
           </label>
+          <br />
+
           <div className="container">
             <button
               type="button"
@@ -223,6 +236,17 @@ function CreateReservation({ today, updateDate }) {
       </div>
       {reservationsError}
     </main>
+  ) : (
+    <div>
+      <h1>Reservation Status Must Be Booked to Edit</h1>
+      <button
+        type="button"
+        onClick={handleCancel}
+        className="btn btn-secondary m-1"
+      >
+        Cancel
+      </button>
+    </div>
   );
 }
-export default CreateReservation;
+export default EditReservation;

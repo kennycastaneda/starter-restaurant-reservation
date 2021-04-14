@@ -28,13 +28,14 @@ function SeatTable() {
 
   useEffect(() => {
     const abortController = new AbortController();
+
     getPeople(reservation_id, abortController.signal)
-      .then((response) => setPeople(response[0].people))
+      .then((res) => setPeople(res[0].people))
       .catch(setTablesError);
 
     return () => abortController.abort();
   }, [reservation_id]);
-  console.log(people);
+
   useEffect(loadTables, []);
 
   function loadTables() {
@@ -46,7 +47,6 @@ function SeatTable() {
   }
 
   const handleChange = ({ target }) => {
-    console.log(target.value);
     setFormData({
       ...formData,
       [target.name]: target.value,
