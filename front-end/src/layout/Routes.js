@@ -9,6 +9,7 @@ import SeatTable from "./Table/SeatTable";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import EditReservation from "./Reservation/EditReservation";
+import { listReservations, listTables } from "../utils/api";
 
 /**
  * Defines all the routes for the application.
@@ -21,6 +22,36 @@ function Routes() {
   const [date, setDate] = useState(today());
   async function updateDate(newDate) {
     setDate(newDate);
+  }
+
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
+  const [reservationsDate, setReservationsDate] = useState([]);
+  const [reservationsDateError, setReservationsDateError] = useState(null);
+  const [bookedReservations, setBookedReservations] = useState([]);
+  const [bookedReservationsError, setBookedReservationsError] = useState(null);
+
+  function loadTables() {
+    const abortController = new AbortController();
+    listTables({}, abortController.signal)
+      .then(setTables)
+      .catch(setTablesError);
+    return () => abortController.abort();
+  }
+  function loadDashboard() {
+    const abortController = new AbortController();
+    setReservationsDateError(null);
+    listReservations({ date }, abortController.signal)
+      .then(setReservationsDate)
+      .catch(setReservationsDateError);
+    return () => abortController.abort();
+  }
+  function loadAllReservations() {
+    const abortController = new AbortController();
+    listReservations({}, abortController.signal)
+      .then(setBookedReservations)
+      .catch(setBookedReservationsError);
+    return () => abortController.abort();
   }
   return (
     <Switch>
@@ -41,7 +72,24 @@ function Routes() {
         <CreateReservation today={today()} updateDate={updateDate} />
       </Route>
       <Route path="/dashboard">
-        <Dashboard date={date} updateDate={updateDate} />
+        <Dashboard
+          date={date}
+          updateDate={updateDate}
+          loadAllReservations={loadAllReservations}
+          loadDashboard={loadDashboard}
+          loadTables={loadTables}
+          tables={tables}
+          tablesError={tablesError}
+          setTablesError={setTablesError}
+          listTables={listTables}
+          reservationsDate={reservationsDate}
+          setReservationsDate={setReservationsDate}
+          reservationsDateError={reservationsDateError}
+          bookedReservations={bookedReservations}
+          setBookedReservations={setBookedReservations}
+          bookedReservationsError={bookedReservationsError}
+          setBookedReservationsError={setBookedReservationsError}
+        />
       </Route>
       <Route exact={true} path="/tables/new">
         <CreateTable />

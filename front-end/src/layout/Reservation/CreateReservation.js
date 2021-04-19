@@ -44,52 +44,57 @@ function CreateReservation({ today, updateDate }) {
         [target.name]: target.value,
       });
     }
-    if (target.name === "reservation_date") {
-      try {
-        checkInPast(target.value);
-      } catch (error) {
-        setReservationsError((reservationsError) => [
-          ...reservationsError,
-          <ErrorAlert error={error} key={error} />,
-        ]);
-      }
-      try {
-        checkTuesday(target.value);
-      } catch (error) {
-        setReservationsError((reservationsError) => [
-          ...reservationsError,
-          <ErrorAlert error={error} key={error} />,
-        ]);
-      }
-    }
-    if (target.name === "reservation_time") {
-      try {
-        checkTime(target.value);
-      } catch (error) {
-        setReservationsError((reservationsError) => [
-          ...reservationsError,
-          <ErrorAlert error={error} key={error} />,
-        ]);
-      }
-      if (formData.reservation_date === today) {
-        try {
-          checkTodayTime(target.value);
-        } catch (error) {
-          setReservationsError((reservationsError) => [
-            ...reservationsError,
-            <ErrorAlert error={error} key={error} />,
-          ]);
-        }
-      }
-    }
+    // if (target.name === "reservation_date") {
+    //   try {
+    //     checkInPast(target.value);
+    //   } catch (error) {
+    //     setReservationsError((reservationsError) => [
+    //       ...reservationsError,
+    //       <ErrorAlert error={error} key={error} />,
+    //     ]);
+    //   }
+    //   try {
+    //     checkTuesday(target.value);
+    //   } catch (error) {
+    //     setReservationsError((reservationsError) => [
+    //       ...reservationsError,
+    //       <ErrorAlert error={error} key={error} />,
+    //     ]);
+    //   }
+    // }
+    // if (target.name === "reservation_time") {
+    //   try {
+    //     checkTime(target.value);
+    //   } catch (error) {
+    //     setReservationsError((reservationsError) => [
+    //       ...reservationsError,
+    //       <ErrorAlert error={error} key={error} />,
+    //     ]);
+    //   }
+    //   if (formData.reservation_date === today) {
+    //     try {
+    //       checkTodayTime(target.value);
+    //     } catch (error) {
+    //       setReservationsError((reservationsError) => [
+    //         ...reservationsError,
+    //         <ErrorAlert error={error} key={error} />,
+    //       ]);
+    //     }
+    //   }
+    // }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
+      checkInPast(formData.reservation_date);
+      checkTuesday(formData.reservation_date);
+      checkTime(formData.reservation_time);
+      if (formData.reservation_date === today)
+        checkTodayTime(formData.reservation_time);
       const abortController = new AbortController();
-      createReservation(formData, abortController.signal);
-      console.log("new reservation date: ", formData.reservation_date);
+      await createReservation(formData, abortController.signal);
       updateDate(formData.reservation_date);
       history.push(`/dashboard`);
     } catch (error) {
@@ -146,9 +151,9 @@ function CreateReservation({ today, updateDate }) {
               type="tel"
               id="mobile_number"
               name="mobile_number"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               required
-              minLength="10"
+              // minLength="10"
               maxLength="15"
               value={formData.mobile_number}
               onChange={handleChange}
@@ -171,7 +176,7 @@ function CreateReservation({ today, updateDate }) {
               onChange={handleChange}
               className="w-100"
               min="2018-01-01"
-              max="2030-12-31"
+              max="2040-12-31"
             />
           </label>
           <br />
@@ -186,10 +191,8 @@ function CreateReservation({ today, updateDate }) {
               value={formData.reservation_time}
               onChange={handleChange}
               className="w-100"
-              min="10:29"
-              max="21:31"
             />
-            <small>Reservation hours are 10am to Midnight</small>
+            <small>Reservation hours are 10:30AM to 9:30PM</small>
           </label>
           <br />
           <label>

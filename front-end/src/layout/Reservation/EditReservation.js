@@ -25,7 +25,7 @@ function EditReservation({ today, updateDate }) {
     reservation_date: "",
     reservation_time: "",
     people: 0,
-    reservation_status: "",
+    status: "",
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
@@ -50,11 +50,17 @@ function EditReservation({ today, updateDate }) {
 
   const handleChange = ({ target }) => {
     setReservationsError([]);
-    setFormData({
-      ...formData,
-      [target.name]: target.value,
-    });
-
+    if (target.name === "people") {
+      setFormData({
+        ...formData,
+        [target.name]: Number(target.value),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [target.name]: target.value,
+      });
+    }
     if (target.name === "reservation_date") {
       try {
         checkInPast(target.value);
@@ -98,8 +104,12 @@ function EditReservation({ today, updateDate }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      checkInPast(formData.reservation_date);
+      checkTime(formData.reservation_time);
+      if (formData.reservation_date === today)
+        checkTodayTime(formData.reservation_time);
       const abortController = new AbortController();
-      updateReservation(formData, abortController.signal);
+      await updateReservation(formData, abortController.signal);
       console.log("new reservation date: ", formData.reservation_date);
       await updateDate(formData.reservation_date);
       history.push("/dashboard");
@@ -115,7 +125,7 @@ function EditReservation({ today, updateDate }) {
     history.goBack();
   };
 
-  return formData.reservation_status === "booked" ? (
+  return formData.status === "booked" ? (
     <main>
       <h1>Edit Reservation {reservation_id}</h1>
       <div className="d-md-flex mb-3">
@@ -157,9 +167,9 @@ function EditReservation({ today, updateDate }) {
               type="tel"
               id="mobile_number"
               name="mobile_number"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               required
-              minLength="10"
+              // minLength="10"
               maxLength="15"
               value={formData.mobile_number}
               onChange={handleChange}
@@ -182,7 +192,7 @@ function EditReservation({ today, updateDate }) {
               onChange={handleChange}
               className="w-100"
               min="2018-01-01"
-              max="2030-12-31"
+              max="2050-12-31"
             />
           </label>
           <br />
@@ -197,10 +207,8 @@ function EditReservation({ today, updateDate }) {
               value={formData.reservation_time}
               onChange={handleChange}
               className="w-100"
-              min="10:29"
-              max="21:31"
             />
-            <small>Reservation hours are 10am to Midnight</small>
+            <small>Reservation hours are 10:30AM to 9:30PM</small>
           </label>
           <br />
           <label>

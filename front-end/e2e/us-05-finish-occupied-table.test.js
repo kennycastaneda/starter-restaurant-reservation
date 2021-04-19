@@ -42,6 +42,7 @@ describe("US-05 - Finish an occupied table - E2E", () => {
       table = await createTable({
         table_name: `#${Date.now().toString(10)}`,
         capacity: 99,
+        occupied: true,
         reservation_id: reservation.reservation_id,
       });
 
@@ -65,16 +66,18 @@ describe("US-05 - Finish an occupied table - E2E", () => {
         `[data-table-id-status="${table.table_id}"]`,
         "occupied"
       );
-
       expect(containsOccupied).toBe(true);
 
       const finishButtonSelector = `[data-table-id-finish="${table.table_id}"]`;
+      console.log("***before waitForSelector***", finishButtonSelector);
       await page.waitForSelector(finishButtonSelector);
+      console.log("***after waitForSelector***");
 
       page.on("dialog", async (dialog) => {
         expect(dialog.message()).toContain(
           "Is this table ready to seat new guests?"
         );
+
         await dialog.accept();
       });
 

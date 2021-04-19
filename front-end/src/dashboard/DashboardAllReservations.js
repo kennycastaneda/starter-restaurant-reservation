@@ -17,8 +17,8 @@ function DashboardAllReservations({ reservations, reservationsError }) {
       <ErrorAlert error={reservationsError} />
       <div className="d-flex flex-wrap ">
         {reservations.map((reservation) =>
-          reservation.reservation_status === "finished" ||
-          reservation.reservation_status === "cancelled" ? null : (
+          reservation.status === "finished" ||
+          reservation.status === "cancelled" ? null : (
             <div
               className="d-md-flex flex-column border p-3 col"
               key={reservation.reservation_id}

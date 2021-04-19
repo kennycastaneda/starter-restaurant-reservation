@@ -61,7 +61,8 @@ describe("US-05 - Finish an occupied table", () => {
 
       const finishResponse = await request(app)
         .delete(`/tables/${tableOne.table_id}/seat`)
-        .set("Accept", "application/json");
+        .set("Accept", "application/json")
+        .send({ data: { reservation_id: 1 } });
 
       expect(finishResponse.body.error).toBeUndefined();
       expect(finishResponse.status).toBe(200);

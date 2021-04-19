@@ -179,6 +179,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
       const [submitButton] = await page.$x(
         "//button[contains(translate(., 'ACDEFGHIJKLMNOPQRSTUVWXYZ', 'acdefghijklmnopqrstuvwxyz'), 'submit')]"
       );
+      console.log("after submitButton")
 
       if (!submitButton) {
         throw new Error("button containing submit not found.");
@@ -193,6 +194,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
         submitButton.click(),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
+      console.log("after click submitButton")
 
       expect(page.url()).toContain("/dashboard");
 

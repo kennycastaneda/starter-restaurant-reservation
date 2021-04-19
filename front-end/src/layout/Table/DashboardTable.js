@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  listTables,
-  finishTable,
-  reservationStatusUpdate,
-} from "../../utils/api";
+import React from "react";
+import { finishTable } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 /**
@@ -11,21 +7,14 @@ import ErrorAlert from "../ErrorAlert";
  *
  * @returns {JSX.Element}
  */
-function DashboardTable({ loadAllReservations }) {
-  const [tables, setTables] = useState([]);
-  const [tablesError, setTablesError] = useState(null);
-
-  useEffect(() => {
-    return loadTables();
-  }, []);
-
-  function loadTables() {
-    const abortController = new AbortController();
-    listTables({}, abortController.signal)
-      .then(setTables)
-      .catch(setTablesError);
-    return () => abortController.abort();
-  }
+function DashboardTable({
+  loadAllReservations,
+  loadDashboard,
+  loadTables,
+  tables,
+  tablesError,
+  setTablesError,
+}) {
   async function finishClick(event) {
     if (
       window.confirm(
@@ -36,19 +25,21 @@ function DashboardTable({ loadAllReservations }) {
       const reservationTableIds = event.target.value.split(",");
       console.log(reservationTableIds);
       Promise.all([
-        reservationStatusUpdate(
-          reservationTableIds[1], //reservation_id
-          "finished",
-          abortController.signal
-        ),
+        // reservationStatusUpdate(
+        //   reservationTableIds[1], //reservation_id
+        //   "finished",
+        //   abortController.signal
+        // ),
 
         finishTable(
           reservationTableIds[0], //table_id
+          reservationTableIds[1], //reservation_id
           abortController.signal
         ),
       ])
         .then(loadTables)
         .then(loadAllReservations)
+        .then(loadDashboard)
         .catch(setTablesError);
 
       return () => abortController.abort();
@@ -69,17 +60,21 @@ function DashboardTable({ loadAllReservations }) {
             className="d-md-flex flex-column border p-3 col"
             key={table.table_id}
           >
-            <h4 className="mb-0">Table {table.table_name}</h4>
+            <h4 className="mb-0">
+              Table {table.table_name} - {table.capacity}
+            </h4>
 
             <p data-table-id-status={table.table_id}>
-              {table.occupied
-                ? `Occupied - Reservation #${table.reservation_id}`
-                : "Free"}
+              {table.occupied ? "Occupied" : "Free"}
+            </p>
+            <p>
+              {table.occupied ? `Reservation #${table.reservation_id}` : null}
             </p>
             <button
               className="btn btn-warning"
               onClick={finishClick}
               value={[table.table_id, table.reservation_id]}
+              data-table-id-finish={table.table_id}
               data-reservation-id-status={table.reservation_id}
               disabled={!table.occupied}
             >

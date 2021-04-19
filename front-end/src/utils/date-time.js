@@ -76,7 +76,7 @@ export function checkTime(time) {
   if (
     Number(hour) < 10 ||
     (Number(hour) === 10 && Number(minute) < 30) ||
-    Number(hour) > 22 ||
+    Number(hour) >= 22 ||
     (Number(hour) === 21 && Number(minute) > 30)
   ) {
     throw new Error("Can only make reservation between 10:30 AM and 9:30 PM.");

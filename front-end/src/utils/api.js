@@ -106,7 +106,7 @@ export async function createReservation(reservation, signal) {
   return await fetchJson(url, options);
 }
 export async function updateReservation(reservation, signal) {
-  const url = `${API_BASE_URL}/reservations`;
+  const url = `${API_BASE_URL}/reservations/${reservation.reservation_id}`;
   const data = { data: reservation };
 
   const options = {
@@ -150,7 +150,7 @@ export async function searchReservation(params, signal) {
 export async function seatTable(table, reservation_id, signal) {
   const url = `${API_BASE_URL}/tables/${table}/seat`;
   const data = {
-    data: { table_id: table, reservation_id: reservation_id },
+    data: { reservation_id: reservation_id },
   };
 
   const options = {
@@ -168,7 +168,7 @@ export async function reservationStatusUpdate(
 ) {
   const url = `${API_BASE_URL}/reservations/${reservation_id}/status`;
   const data = {
-    data: { new_status: new_status },
+    data: { status: new_status },
   };
   const options = {
     method: "PUT",
@@ -190,11 +190,12 @@ export async function getPeople(reservation_id, signal) {
   return await fetchJson(url, options);
 }
 
-export async function finishTable(table_id, signal) {
+export async function finishTable(table_id, reservation_id, signal) {
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
-
+  const data = { data: { reservation_id: reservation_id } };
   const options = {
     method: "DELETE",
+    body: JSON.stringify(data),
     headers,
     signal,
   };

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import React, { useEffect } from "react";
+//import { listReservations, listTables } from "../utils/api";
 import useQuery from "../utils/useQuery";
 import ErrorAlert from "../layout/ErrorAlert";
 import DashboardDate from "./DashboardDate";
@@ -13,36 +13,29 @@ import DashboardTable from "../layout/Table/DashboardTable";
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date, updateDate }) {
-  const [reservationsDate, setReservationsDate] = useState([]);
-  const [reservationsDateError, setReservationsDateError] = useState(null);
-  const [bookedReservations, setBookedReservations] = useState([]);
-  const [bookedReservationsError, setBookedReservationsError] = useState(null);
-
+function Dashboard({
+  date,
+  updateDate,
+  loadAllReservations,
+  loadDashboard,
+  loadTables,
+  tables,
+  tablesError,
+  setTablesError,
+  listTables,
+  reservationsDate,
+  reservationsDateError,
+  bookedReservations,
+  bookedReservationsError,
+}) {
+  useEffect(loadTables, []);
   useEffect(loadAllReservations, []);
-
-  function loadAllReservations() {
-    const abortController = new AbortController();
-    listReservations({}, abortController.signal)
-      .then(setBookedReservations)
-      .catch(setBookedReservationsError);
-    return () => abortController.abort();
-  }
-
   useEffect(loadDashboard, [date]);
+
   const query = useQuery();
   const dateQuery = query.get("date");
   if (dateQuery != null) {
     date = dateQuery;
-  }
-
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsDateError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservationsDate)
-      .catch(setReservationsDateError);
-    return () => abortController.abort();
   }
 
   return (
@@ -62,7 +55,7 @@ function Dashboard({ date, updateDate }) {
             key={reservation.reservation_id}
           >
             <h4 className="mb-0">Reservation #{reservation.reservation_id}</h4>
-            <h5>{reservation.reservation_status}</h5>
+            <h5>{reservation.status}</h5>
             <p className="mb-0">
               {reservation.first_name} {reservation.last_name} -{" "}
               {reservation.mobile_number}
@@ -82,7 +75,15 @@ function Dashboard({ date, updateDate }) {
           />
         </div>
         <div className="column w-50  d-flex flex-wrap">
-          <DashboardTable loadAllReservations = {loadAllReservations}/>
+          <DashboardTable
+            loadAllReservations={loadAllReservations}
+            loadDashboard={loadDashboard}
+            loadTables={loadTables}
+            tables={tables}
+            tablesError={tablesError}
+            setTablesError={setTablesError}
+            listTables={listTables}
+          />
         </div>
       </div>
     </main>

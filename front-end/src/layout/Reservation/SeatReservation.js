@@ -2,15 +2,14 @@ import React from "react";
 import { reservationStatusUpdate } from "../../utils/api";
 
 function SeatReservation({ reservation }) {
-  function handleCancle(event) {
-    console.log("to do: Setup condition window: ");
+  async function handleCancle(event) {
     if (
       window.confirm(
         "Do you want to cancel this reservation? This cannot be undone."
       )
     ) {
       const abortController = new AbortController();
-      reservationStatusUpdate(
+      await reservationStatusUpdate(
         event.target.value,
         "cancelled",
         abortController.signal
@@ -32,20 +31,20 @@ function SeatReservation({ reservation }) {
       <p className="mb-0">Time: {reservation.reservation_time}</p>
       <p className="mb-0">Party Size: {reservation.people}</p>
       <p data-reservation-id-status={reservation.reservation_id}>
-        Status: {reservation.reservation_status}
+        Status: {reservation.status}
       </p>
       <div className="d-flex">
         <a
           href={`/reservations/${reservation.reservation_id}/seat`}
           className="btn btn-primary m-1"
-          hidden={!(reservation.reservation_status === "booked")}
+          hidden={!(reservation.status === "booked")}
         >
           Seat
         </a>
         <a
           href={`/reservations/${reservation.reservation_id}/edit`}
           className="btn btn-secondary m-1"
-          hidden={!(reservation.reservation_status === "booked")}
+          hidden={!(reservation.status === "booked")}
         >
           Edit
         </a>
@@ -54,7 +53,7 @@ function SeatReservation({ reservation }) {
           className="btn btn-danger m-1"
           value={reservation.reservation_id}
           data-reservation-id-cancel={reservation.reservation_id}
-          hidden={reservation.reservation_status === "cancelled"}
+          hidden={reservation.status === "cancelled"}
         >
           Cancel
         </button>

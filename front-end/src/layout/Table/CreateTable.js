@@ -12,7 +12,7 @@ import { createTable } from "../../utils/api";
 function CreateReservation() {
   const initialFormState = {
     table_name: "",
-    capacity: 1,
+    capacity: 0,
   };
   const [formData, setFormData] = useState({ ...initialFormState });
   const [tablesError, setTablesError] = useState(null);
@@ -75,7 +75,6 @@ function CreateReservation() {
               onChange={handleChange}
               className="w-100"
               min="1"
-              max="24"
             />
           </label>
           <div className="container">
