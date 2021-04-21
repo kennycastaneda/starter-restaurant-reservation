@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
@@ -10,6 +10,7 @@ import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import EditReservation from "./Reservation/EditReservation";
 import { listReservations, listTables } from "../utils/api";
+import useQuery from "../utils/useQuery";
 
 /**
  * Defines all the routes for the application.
@@ -53,6 +54,16 @@ function Routes() {
       .catch(setBookedReservationsError);
     return () => abortController.abort();
   }
+
+  const query = useQuery();
+  const dateQuery = query.get("date");
+
+  useEffect(() => {
+    if (dateQuery != null) {
+      setDate(dateQuery);
+    }
+  }, []);
+
   return (
     <Switch>
       <Route exact={true} path="/">
@@ -74,6 +85,7 @@ function Routes() {
       <Route path="/dashboard">
         <Dashboard
           date={date}
+          today={today()}
           updateDate={updateDate}
           loadAllReservations={loadAllReservations}
           loadDashboard={loadDashboard}

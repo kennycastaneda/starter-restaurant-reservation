@@ -50,28 +50,28 @@ function DashboardTable({
 
   return (
     <main>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Tables: </h4>
+      <div className="mb-3 container-fluid ">
+        <h4 className="mb-0 text-center ">Tables</h4>
       </div>
       <ErrorAlert error={tablesError} />
-      <div className="d-flex flex-wrap ">
+      <div className="d-flex flex-wrap container-fluid justify-content-center">
         {tables.map((table) => (
           <div
-            className="d-md-flex flex-column border p-3 col"
+            className=" border  border-secondary d-flex flex-column p-3 col table text-center"
             key={table.table_id}
           >
-            <h4 className="mb-0">
-              Table {table.table_name} - {table.capacity}
+            <h4 className="mb-0 pt-3">
+              {table.table_name} - {table.capacity}
             </h4>
 
-            <p data-table-id-status={table.table_id}>
+            <p data-table-id-status={table.table_id} className="occupied ">
               {table.occupied ? "Occupied" : "Free"}
             </p>
-            <p>
-              {table.occupied ? `Reservation #${table.reservation_id}` : null}
+            <p className="text-center">
+              {table.occupied ? `Res. #${table.reservation_id}` : null}
             </p>
             <button
-              className="btn btn-warning"
+              className="btn btn-outline-primary bg-white rounded-pill "
               onClick={finishClick}
               value={[table.table_id, table.reservation_id]}
               data-table-id-finish={table.table_id}

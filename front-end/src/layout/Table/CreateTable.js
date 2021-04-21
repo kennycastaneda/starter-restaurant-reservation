@@ -43,7 +43,7 @@ function CreateReservation() {
 
   return (
     <main>
-      <h1>Create New Reservation</h1>
+      <h1>Create New Table</h1>
       <div className="d-md-flex mb-3">
         <form onSubmit={handleSubmit} className="column">
           <label>
@@ -81,11 +81,11 @@ function CreateReservation() {
             <button
               type="button"
               onClick={handleCancel}
-              className="btn btn-secondary m-1"
+              className="btn btn-secondary m-1 rounded-pill"
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary m-1">
+            <button type="submit" className="btn btn-primary m-1 rounded-pill">
               Submit
             </button>
           </div>

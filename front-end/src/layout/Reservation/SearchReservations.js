@@ -58,9 +58,10 @@ function SearchReservation() {
   };
 
   return (
-    <main>
+    <main className="container-fluid m-auto ">
       <h1>Search Reservations</h1>
-      <div className="d-md-flex mb-3">
+      <div className="d-md-flex mb-3 container-fluid 
+      ">
         <form onSubmit={handleSubmit} className="column">
           <label>
             Enter Mobile Number
@@ -83,21 +84,21 @@ function SearchReservation() {
             <button
               type="button"
               onClick={handleCancel}
-              className="btn btn-secondary m-1"
+              className="btn btn-secondary m-1 rounded-pill"
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary m-1">
+            <button type="submit" className="btn btn-primary rounded-pill m-1">
               Find
             </button>
           </div>
         </form>
       </div>
       <ErrorAlert error={reservationsError} />
-      <div className="d-flex flex-wrap">
+      <div className="d-flex flex-wrap justify-content-center">
         {reservations.map((reservation) => (
           <div
-            className="d-md-flex flex-column border p-3 col-6"
+            className="d-md-flex flex-column border border-dark rounded p-3 col-sm-4 col-md-3 m-3 reservation-all"
             key={reservation.reservation_id}
           >
             <SeatReservation reservation={reservation} />

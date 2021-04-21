@@ -232,11 +232,11 @@ function EditReservation({ today, updateDate }) {
             <button
               type="button"
               onClick={handleCancel}
-              className="btn btn-secondary m-1"
+              className="btn btn-secondary rounded-pill m-1"
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary m-1">
+            <button type="submit" className="btn btn-primary rounded-pill  m-1">
               Submit
             </button>
           </div>

@@ -44,44 +44,6 @@ function CreateReservation({ today, updateDate }) {
         [target.name]: target.value,
       });
     }
-    // if (target.name === "reservation_date") {
-    //   try {
-    //     checkInPast(target.value);
-    //   } catch (error) {
-    //     setReservationsError((reservationsError) => [
-    //       ...reservationsError,
-    //       <ErrorAlert error={error} key={error} />,
-    //     ]);
-    //   }
-    //   try {
-    //     checkTuesday(target.value);
-    //   } catch (error) {
-    //     setReservationsError((reservationsError) => [
-    //       ...reservationsError,
-    //       <ErrorAlert error={error} key={error} />,
-    //     ]);
-    //   }
-    // }
-    // if (target.name === "reservation_time") {
-    //   try {
-    //     checkTime(target.value);
-    //   } catch (error) {
-    //     setReservationsError((reservationsError) => [
-    //       ...reservationsError,
-    //       <ErrorAlert error={error} key={error} />,
-    //     ]);
-    //   }
-    //   if (formData.reservation_date === today) {
-    //     try {
-    //       checkTodayTime(target.value);
-    //     } catch (error) {
-    //       setReservationsError((reservationsError) => [
-    //         ...reservationsError,
-    //         <ErrorAlert error={error} key={error} />,
-    //       ]);
-    //     }
-    //   }
-    // }
   };
 
   const handleSubmit = async (event) => {
@@ -214,11 +176,11 @@ function CreateReservation({ today, updateDate }) {
             <button
               type="button"
               onClick={handleCancel}
-              className="btn btn-secondary m-1"
+              className="btn btn-secondary rounded-pill m-1"
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary m-1">
+            <button type="submit" className="btn btn-primary rounded-pill m-1">
               Submit
             </button>
           </div>

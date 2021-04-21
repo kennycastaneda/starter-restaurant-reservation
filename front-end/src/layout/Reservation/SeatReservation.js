@@ -24,33 +24,33 @@ function SeatReservation({ reservation }) {
     <div>
       <h4 className="mb-0">Reservation #{reservation.reservation_id}</h4>
       <p className="mb-0">
-        {reservation.first_name} {reservation.last_name} -{" "}
-        {reservation.mobile_number}
+        {reservation.first_name} {reservation.last_name}
       </p>
+      <p className="mb-0">{reservation.mobile_number}</p>
       <p className="mb-0">Date: {reservation.reservation_date}</p>
       <p className="mb-0">Time: {reservation.reservation_time}</p>
       <p className="mb-0">Party Size: {reservation.people}</p>
       <p data-reservation-id-status={reservation.reservation_id}>
         Status: {reservation.status}
       </p>
-      <div className="d-flex">
+      <div className="d-flex justify-content-center">
         <a
           href={`/reservations/${reservation.reservation_id}/seat`}
-          className="btn btn-primary m-1"
+          className="btn btn-primary m-1 rounded-pill"
           hidden={!(reservation.status === "booked")}
         >
           Seat
         </a>
         <a
           href={`/reservations/${reservation.reservation_id}/edit`}
-          className="btn btn-secondary m-1"
+          className="btn btn-secondary m-1 rounded-pill"
           hidden={!(reservation.status === "booked")}
         >
           Edit
         </a>
         <button
           onClick={handleCancle}
-          className="btn btn-danger m-1"
+          className="btn btn-outline-danger bg-white m-1 rounded-pill"
           value={reservation.reservation_id}
           data-reservation-id-cancel={reservation.reservation_id}
           hidden={reservation.status === "cancelled"}

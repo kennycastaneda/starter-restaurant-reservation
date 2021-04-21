@@ -17,14 +17,26 @@ function DashboardDate({ date, updateDate }) {
     history.push(`/dashboard`);
   };
   return (
-    <div className="d-flex row justify-content-around">
-      <button className="w-25 btn btn-secondary" onClick={handlePastDay}>
-        Past Day
+    <div className="d-flex row justify-content-center">
+      <button
+        className=" btn btn-outline-primary m-3 px-5 rounded-pill"
+        onClick={handlePastDay}
+      >
+        Past Day <br />
+        &#8592;
       </button>
-      <button className="w-25 btn btn-secondary" onClick={handleNextDay}>
-        Next Day
+      <button
+        className=" btn btn-outline-primary m-3 px-5 rounded-pill"
+        onClick={handleNextDay}
+      >
+        Next Day <br />
+        &#8594;
       </button>
-      <button className="w-25 btn btn-success" onClick={handleToday}>
+      <button
+        className=" btn btn-primary m-3 px-5 rounded-pill"
+        onClick={handleToday}
+        disabled={date === today()}
+      >
         Today
       </button>
     </div>

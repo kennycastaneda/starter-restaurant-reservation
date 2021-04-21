@@ -10,17 +10,17 @@ import SeatReservation from "../layout/Reservation/SeatReservation";
 function DashboardAllReservations({ reservations, reservationsError }) {
   return (
     <main>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">All Booked Or Seated Reservations: </h4>
+      <div className="mb-3 container-fluid">
+        <h4 className="mb-0 text-center">All Booked Or Seated Reservations</h4>
       </div>
 
       <ErrorAlert error={reservationsError} />
-      <div className="d-flex flex-wrap ">
+      <div className="d-flex flex-wrap container-fluid m-auto justify-content-center">
         {reservations.map((reservation) =>
           reservation.status === "finished" ||
           reservation.status === "cancelled" ? null : (
             <div
-              className="d-md-flex flex-column border p-3 col"
+              className="d-flex flex-column border border-dark rounded-lg p-3 col-sm col-lg-5 reservation-all m-1"
               key={reservation.reservation_id}
             >
               <SeatReservation reservation={reservation} />
