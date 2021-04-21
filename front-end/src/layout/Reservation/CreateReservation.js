@@ -123,7 +123,7 @@ function CreateReservation({ today, updateDate }) {
               placeholder="555-555-1234"
             />
           </label>
-
+          <br />
           <small>Format 555-555-1234</small>
           <br />
           <label>
