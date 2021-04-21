@@ -54,6 +54,9 @@ function Routes() {
       .catch(setBookedReservationsError);
     return () => abortController.abort();
   }
+  useEffect(loadTables, []);
+  useEffect(loadAllReservations, []);
+  useEffect(loadDashboard, [date]);
 
   const query = useQuery();
   const dateQuery = query.get("date");
@@ -62,7 +65,7 @@ function Routes() {
     if (dateQuery != null) {
       setDate(dateQuery);
     }
-  }, []);
+  }, [dateQuery]);
 
   return (
     <Switch>

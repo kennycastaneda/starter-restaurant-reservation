@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 //import { listReservations, listTables } from "../utils/api";
 
 import ErrorAlert from "../layout/ErrorAlert";
@@ -29,10 +29,6 @@ function Dashboard({
   bookedReservationsError,
   today,
 }) {
-  useEffect(loadTables, []);
-  useEffect(loadAllReservations, []);
-  useEffect(loadDashboard, [date]);
-
   return (
     <main>
       <h1>Dashboard</h1>
