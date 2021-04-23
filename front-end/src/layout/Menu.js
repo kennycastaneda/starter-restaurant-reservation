@@ -47,9 +47,6 @@ function Menu() {
             </Link>
           </li>
         </ul>
-        <div className="text-center d-none d-md-inline">
-          <button className="btn  border-0" id="sidebarToggle" type="button" />
-        </div>
       </div>
     </nav>
   );

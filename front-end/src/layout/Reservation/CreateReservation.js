@@ -152,8 +152,8 @@ function CreateReservation({ today, updateDate }) {
               required
               value={formData.reservation_time}
               onChange={handleChange}
-              className="w-100"
             />
+            <br />
             <small>Reservation hours are 10:30AM to 9:30PM</small>
           </label>
           <br />
