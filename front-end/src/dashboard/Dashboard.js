@@ -1,5 +1,4 @@
-import React from "react";
-//import { listReservations, listTables } from "../utils/api";
+import React, { useEffect } from "react";
 
 import ErrorAlert from "../layout/ErrorAlert";
 import DashboardDate from "./DashboardDate";
@@ -29,6 +28,9 @@ function Dashboard({
   bookedReservationsError,
   today,
 }) {
+  useEffect(loadTables, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(loadAllReservations, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(loadDashboard, [date]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <main>
       <h1>Dashboard</h1>
