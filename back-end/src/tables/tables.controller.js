@@ -34,7 +34,7 @@ const hasCapacity = dataHas("capacity");
 const hasReservationId = dataHas("reservation_id");
 
 async function reservationExists(req, res, next) {
-  console.log(req.body);
+
   if (!req.body || !req.body.data) {
     const message = `Req Doesn't have body data in checking reservationExists`;
     return next({ status: 400, message: message });

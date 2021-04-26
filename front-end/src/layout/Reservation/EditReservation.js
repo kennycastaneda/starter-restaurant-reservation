@@ -110,7 +110,7 @@ function EditReservation({ today, updateDate }) {
         checkTodayTime(formData.reservation_time);
       const abortController = new AbortController();
       await updateReservation(formData, abortController.signal);
-      console.log("new reservation date: ", formData.reservation_date);
+     
       await updateDate(formData.reservation_date);
       history.push("/dashboard");
     } catch (error) {

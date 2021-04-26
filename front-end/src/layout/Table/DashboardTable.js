@@ -23,7 +23,7 @@ function DashboardTable({
     ) {
       const abortController = new AbortController();
       const reservationTableIds = event.target.value.split(",");
-      console.log(reservationTableIds);
+      
       Promise.all([
         // reservationStatusUpdate(
         //   reservationTableIds[1], //reservation_id

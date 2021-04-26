@@ -107,7 +107,11 @@ function Routes() {
         />
       </Route>
       <Route exact={true} path="/tables/new">
-        <CreateTable />
+        <CreateTable
+          loadAllReservations={loadAllReservations}
+          loadDashboard={loadDashboard}
+          loadTables={loadTables}
+        />
       </Route>
       <Route exact={true} path="/search">
         <SearchReservation />

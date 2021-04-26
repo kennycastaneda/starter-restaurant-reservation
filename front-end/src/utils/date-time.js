@@ -87,7 +87,7 @@ export function checkTodayTime(time) {
   const nowTime = new Date();
   const nowHour = nowTime.getHours();
   const nowMinute = nowTime.getMinutes();
-  console.log(nowHour, nowMinute);
+
   if (
     Number(hour) < nowHour ||
     (Number(hour) === nowHour && Number(minute) < nowMinute)

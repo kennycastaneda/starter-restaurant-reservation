@@ -9,7 +9,7 @@ import { createTable } from "../../utils/api";
  * @returns {JSX.Element}
  */
 
-function CreateReservation() {
+function CreateTable(loadTables, loadAllReservations, loadDashboard) {
   const initialFormState = {
     table_name: "",
     capacity: 0,
@@ -25,11 +25,14 @@ function CreateReservation() {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const abortController = new AbortController();
-      createTable(formData, abortController.signal);
+      await createTable(formData, abortController.signal);
+      await loadTables;
+      await loadAllReservations;
+      await loadDashboard;
       history.push(`/dashboard`);
     } catch (error) {
       setTablesError(error);
@@ -96,4 +99,4 @@ function CreateReservation() {
   );
 }
 
-export default CreateReservation;
+export default CreateTable;
