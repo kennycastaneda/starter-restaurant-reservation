@@ -7,7 +7,11 @@
 > Back-end: https://starter-restaurant-reservation.vercel.app/
 
 ## API
-## Screenshots of your application. 
-## A summary section that concisely explains what your application does. Try to frame this from the standpoint of what the user does, or how the application benefits the user.
-## App utilizes React and Bootstrap for front-end. Utilizes Next.js, knex, and PostgreSQL for back-end.
-## Once cloned, run "npm run test" to run all tests.
+## Screenshots:
+
+## What it does:
+The end user is a restaurant manager or host who takes calls for reservations. They are able to input new reservations, look up and edit existing reservations, and seat reservations when parties arrive. They are also able to add tables with given capacity. There is no current features to edit or delete tables.
+## Technologies used:
+App utilizes React and Bootstrap for front-end. Utilizes Next.js, knex, and PostgreSQL for back-end.
+## Testing instructions:
+Once cloned, run "npm run test" to run all tests.
