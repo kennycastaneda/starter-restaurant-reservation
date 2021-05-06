@@ -1,6 +1,7 @@
 # Capstone: Restaurant Reservation System
->  _Periodic Tables_, a startup that is creating a reservation system for fine dining restaurants.
-> The software is used only by restaurant personnel when a customer calls to request a reservation.
+_Periodic Tables_, a startup that is creating a reservation system for fine dining restaurants.
+
+The software is used only by restaurant personnel when a customer calls to request a reservation.
 
 ## Link to live application: 
 - [Front-end](https://starter-restaurant-reservation-front.vercel.app/dashboard)
