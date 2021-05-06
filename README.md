@@ -3,12 +3,12 @@
 > The software is used only by restaurant personnel when a customer calls to request a reservation.
 
 ## Link to live application: 
-> Front-end: https://starter-restaurant-reservation-front.vercel.app/dashboard
-> Back-end: https://starter-restaurant-reservation.vercel.app/
+- Front-end: https://starter-restaurant-reservation-front.vercel.app/dashboard
+- Back-end: https://starter-restaurant-reservation.vercel.app/
 
 ## API
 ## Screenshots:
-
+![Alt text](https://github.com/kennycastaneda/starter-restaurant-reservation/blob/main/reservation%20screenshot.PNG "Reservation Dashboard")
 ## What it does:
 The end user is a restaurant manager or host who takes calls for reservations. They are able to input new reservations, look up and edit existing reservations, and seat reservations when parties arrive. They are also able to add tables with given capacity. There is no current features to edit or delete tables.
 ## Technologies used:
